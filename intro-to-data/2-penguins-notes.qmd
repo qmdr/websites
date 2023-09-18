@@ -1,0 +1,109 @@
+---
+title: "Example: Palmer Penguins"
+subtitle: "A case study from way down under"
+image: images/taxonomy-small.png
+format: html
+---
+
+Dr. Kristen Gorman is a fisheries and wildlife ecologist at the University of Alaska, Fairbanks whose work brought her to Palmer Station, a scientific research station run by the National Science Foundation in Antarctica. At Palmer Station, she took part in a long-term study to build an understanding of the breeding ecology and population structure of penguins.
+
+:::{#fig-palmer layout-ncol=2}
+
+![](images/kristen-gorman.png){fig-alt="Dr. Gorman recording data in notebook surrounded by penguins."}
+
+![](images/palmer-station.jpeg){fig-alt="An aerial view of Palmer Station in Antarctica."}
+
+Dr. Gorman recording measurements on penguins and Palmer Station, a research station in Antarctica.
+:::
+
+In order to build her understanding of this community of penguins, she and fellow scientists spent time in the field recording measurements on a range of variables that capture important physical characteristics.
+
+:::{.column-margin}
+![](images/culmen-depth.png){fig-alt="Sketch showing the beak of a penguin."}
+:::
+
+Two of the variables that were recorded were *bill length* and *bill depth*[^horst-art]. Each of these capture a dimension of the bill of a penguin recorded in millimeters These are identifiable as *continuous numerical variables*. They're numerical because the values have quantitative meaning and they're continuous because bill sizes don't come in fixed, standard increments. They vary continuously.
+
+[^horst-art]: Penguin artwork by \@allison_horst.
+
+Another variable that was recorded was the *species* of the penguin, either "Adelie", "Gentoo", or "Chinstrap". Because these values are categories, this is a *categorical* variable. More specifically, it's a *nominal categorical* because there is no obvious natural ordering between these three species.
+
+:::{.column-margin}
+![](images/lter_penguins.png){fig-alt="Sketch showing the three species of penguins."}
+:::
+
+These are just three of many variables that recorded in the penguins data set and published along their scientific findings in the paper, *Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis)*[^Gorman]. We will return throughout this course to this data set and this study. It is a prime example of how careful data collection and careful scientific reasoning can expand our understanding of a corner of our world about which we know very little.
+
+[^Gorman]: Gorman KB, Williams TD, Fraser WR (2014). *Ecological sexual dimorphism and environmental variability within a community of Antarctic penguins (genus Pygoscelis)*. PLoS ONE 9(3):e90081. <https://doi.org/10.1371/journal.pone.0090081>
+
+
+### Why Types Matter
+
+The Taxonomy of Data is a useful tool of statistics and data science because it helps guide the manner in which data is recorded, visualized, and analyzed. Many confusing plots have been made by not thinking carefully about whether a categorical variable is ordinal or not or by mistaking a continuous numerical variable for a categorical variable. You will get plenty of practice using this taxonomy to guide your data visualization in the next unit.
+
+Like many tools built by scientists, though, this taxonomy isn't perfect. There are many variables that don't quite seem to fit into the taxonomy or that you can argue should fit into multiple types. That's usually a sign that something interesting is afoot and is all the more reason to think carefully about the nature of the variables and the values it might take before diving into your analysis.
+
+## A Structure for Data: The Data Frame
+
+When we seek to grow our understanding of a phenomenon, sometimes we select a single variable that we go out and collect data on. More often, we're dealing with more complex phenomenon that are characterized by a few, or a few dozen, or hundreds (or even millions!) of variables. CalCentral has far more than just your name on file. To capture all of the complexity of class registration at Cal, it is necessary to record dozens of variables.
+
+To keep all of this data organized, we need a structure. While there are several different ways to structure a given data set, the format that has become most central to data science is the data frame.
+
+**Data Frame**
+ ~ An array that associates the observations (downs the rows) with the variables measured on each observation (across the columns). Each cell stores a value observed for a variable on an observation.
+
+While this definition might seem opaque, you are already familiar with a data frame. You are you just more accustomed to seeing it laid out this like this:
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(dplyr)
+library(palmerpenguins)
+library(kableExtra)
+options(kableExtra.html.bsTable = TRUE)
+set.seed(30)
+tab <- penguins %>%
+    select(bill_length_mm, bill_depth_mm, species) %>%
+    sample_n(8)
+```
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+tab %>%
+    kbl(escape = FALSE) %>%
+    kable_styling(bootstrap_options = c("hover", "striped"))
+
+# tab %>%
+#     kable(format = "latex")
+```
+
+You might be accustomed to calling this a "spreadsheet" or a "table", but the organizational norm of putting the variables down the columns and the observations across the rows make this a more specific structure.
+
+One of the first questions that you should address when you first come across a data frame is to determine what the unit of observation is.
+
+**Unit of Observation**
+ ~ The class of object on which the variables are observed.
+
+In the case of data frame above, the unit of observation is a single penguin near Palmer Station. The first row captures the measurements on the first penguin, the second row captures the measurements of the second penguin, and so on. If I log into CalCentral to see the data frame that records information on the students enrolled in this class, the unit of observation is a single student enrolled in this class.
+
+### Not a Data Frame
+
+Before you leave thinking that "data frame" = "spreadsheet", consider this data set[^cont-table]:
+
+<!-- Swap out with a table that uses something other than sex since it comes up in lab 2. -->
+
+![](images/non-tidy-contingency-table.png){fig-alt="Contingency table showing the counts of handedness by sex at birth." width="400" fig-align="center"}
+
+For it to be a data frame, we would have to read across the columns and see the names of the variables. You can imagine recording whether or not someone is right-handed or left-handed, but those variables would take the values "yes" and "no", not the counts that we see here. Furthermore, total is not a variable that we've recorded a single unit; this column captures aggregate properties of the whole data set.
+
+While this structure might well be called a "table" or possibly a "spreadsheet", it doesn't meet our definition for a data frame. 
+
+[^cont-table]: An image from the Wikipedia article on contingency tables, <https://en.wikipedia.org/wiki/Contingency_table>.
+
+## Summary
+
+In this lecture note we have focused on the nature of the data that will serve as the currency from which we'll construct an improved understanding of the world. A first step is to identify the characteristics of the *variables* that are being measured and determine their *type* within the *Taxonomy of Data*. A second step is to organize them into a *data frame* to clearly associate the value that is measured for a variable with a particular observational unit. With these ideas in hand, we are prepared to bring data onto our computer and begin the process of identifying its structure and communicating that structure numerically and visually.
